@@ -1,0 +1,200 @@
+body {
+    font-family: Segoe UI;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #000000;
+    box-sizing: border-box;
+}
+  
+header {
+    background: linear-gradient(to right, #ffffff, #ffffff);
+    color: #000000;
+    text-align: center;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+nav ul {
+    display: flex; /* Arrange items horizontally */
+    justify-content: center; /* Center the items */
+    list-style: none; /* Remove bullets */
+    padding: 0;
+}
+
+/* Style each list item */
+nav ul li {
+    margin: 0 10px; /* Add space between the boxes */
+}
+
+/* Style the links */
+nav ul li a {
+    display: inline-block; /* Make the link behave like a box */
+    padding: 10px 15px; /* Add padding inside the box */
+    color: #fff; /* White text */
+    background-color: #444; /* Dark gray background */
+    text-decoration: none; /* Remove underline */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
+}
+
+/* Hover effect */
+nav ul li a:hover {
+    background-color: #555; /* Slightly lighter gray */
+}
+
+main {
+    padding: 2px;
+}
+p {
+    font-size: 18px;
+    margin-bottom: 0px;
+  }
+
+.p2 {
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+  h2 {
+    color: #000000;
+    border-bottom: 2px solid #000000;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  /* CSS Grid container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns per row*/
+    gap: 5px;  /* Gap between the columns */
+    margin: 5px;
+}
+
+.grid-container-p {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns per row*/
+    gap: 6px;  /* Gap between the columns */
+    margin: 20px;
+}
+
+/* Styling for each grid item */
+.grid-item {
+    background-color: #fdfdfd;
+    padding: 20px;
+    border: 1px solid #000000;
+    text-align: center;
+     /* Center the content */
+     display: flex;
+     flex-direction: column;  /* Align items vertically */
+     align-items: center;
+}
+
+/* Center the label with the text boxes */
+.centered-label {
+    display: flex; /* Use Flexbox */
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Space between label and text areas */
+}
+
+/* Styling for the text box */
+textarea {
+    width: 150px;
+    height: 30px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;  /* Disable resizing */
+}
+
+/* Style for the "Name" textarea */
+.name-textarea {
+    width: 125px;
+    height: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Light blue background */
+}
+
+/* Style for the "Email" textarea */
+.email-textarea {
+    width: 200px;
+    height: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Light yellow background */
+}
+
+/* Style for the "Unit Count" textarea */
+.unit-textarea {
+    width: 100px;
+    height: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none; /* Light yellow background */
+}
+
+/* Update button container */
+.update-container {
+    text-align: center;      /* Center the button */
+    margin-bottom: 20px;     /* Space between the button and the footer */
+}
+
+/* Update button styling */
+.update-btn {
+    background-color: #000000;
+    color: white;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.update-btn:hover {
+    background-color: #000000;
+}
+
+
+  #status-container {
+      display: grid; /* Switch to grid layout */
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Create 2 equal columns */
+      gap: 15px; /* Add space between the boxes */
+      justify-content: center; /* Center the grid horizontally */
+      align-items: center; /* Align the boxes vertically */
+      padding: 0; /* Optional padding for spacing inside the container */
+      margin: 0 auto; /* Center the container */
+  }
+  
+  #status-container div {
+      padding: 0.5px; /* Space inside each box */
+      border: 1px solid #333; /* Box border */
+      border-radius: 8px; /* Rounded corners */
+      background-color: #ffffff; /* Box background color */
+      box-sizing: border-box; /* Include border and padding in box size */
+      text-align: center; /* Center the text inside the boxes */
+  }
+
+  #dynamic-link span a {
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+#dynamic-link span a:hover {
+    text-decoration: underline;
+    color: darkblue;
+}
