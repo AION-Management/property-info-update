@@ -1,7 +1,7 @@
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
-
+import { app } from "./firebaseConfig.js";
 // Firebase initialization (update with your config)
-const db = getDatabase();
+const db = getDatabase(app);
 
 // Function to collect all text areas and organize data
 function collectData() {
