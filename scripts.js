@@ -1,4 +1,20 @@
 import { writePropertyData, getPropertyDataByState } from "./firebaseService.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js";
+
+/**
+ * Retrieve all property data for a specific state
+ * @param {string} state - The state name (e.g., "Delaware").
+ * @param {function} callback - A function to handle the retrieved data.
+ */
+function getPropertyDataByState(state, callback) {
+    const db = getDatabase();
+    const stateRef = ref(db, `properties/${state}`);
+    onValue(stateRef, (snapshot) => {
+        const data = snapshot.val();
+        callback(data);
+    });
+}
+
 
 // Function to collect all text areas and organize data
 function collectData() {
