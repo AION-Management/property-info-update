@@ -48,3 +48,28 @@ document.getElementById("submit-button").addEventListener("click", () => {
             });
     }
 });
+
+window.addEventListener("load", () => {
+    const state = document.title.split(": ")[1]; // Get the state from the page title
+    getPropertyDataByState(state, (data) => {
+        if (data) {
+            for (const [propertyName, propertyDetails] of Object.entries(data)) {
+                for (const [fieldKey, fieldDetails] of Object.entries(propertyDetails)) {
+                    const nameId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-name`;
+                    const emailId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-email`;
+                    const unitId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-unit`;
+
+                    if (fieldDetails.name) {
+                        document.getElementById(nameId).value = fieldDetails.name || "";
+                    }
+                    if (fieldDetails.email) {
+                        document.getElementById(emailId).value = fieldDetails.email || "";
+                    }
+                    if (fieldKey === "unitCount") {
+                        document.getElementById(unitId).value = propertyDetails.unitCount || "";
+                    }
+                }
+            }
+        }
+    });
+});
