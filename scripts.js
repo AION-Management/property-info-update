@@ -1,4 +1,4 @@
-import { writePropertyData } from "./firebaseService.js";
+import { writePropertyData, getPropertyDataByState } from "./firebaseService.js";
 
 // Function to collect all text areas and organize data
 function collectData() {
@@ -32,17 +32,6 @@ function collectData() {
     return data;
 }
 
-function loadFromFirebase(state) {
-    const db = getDatabase();
-    const stateRef = ref(db, `properties/${state}`);
-    onValue(stateRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            populateForm(data);
-        }
-    });
-}
-
 function populateForm(data) {
     for (const [propertyName, propertyDetails] of Object.entries(data)) {
         for (const [fieldKey, fieldDetails] of Object.entries(propertyDetails)) {
@@ -63,6 +52,16 @@ function populateForm(data) {
     }
 }
 
+function loadFromFirebase(state) {
+    const db = getDatabase();
+    const stateRef = ref(db, `properties/${state}`);
+    onValue(stateRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            populateForm(data);
+        }
+    });
+}
 
 // Add event listener to the Submit button
 document.getElementById("submit-button").addEventListener("click", () => {
