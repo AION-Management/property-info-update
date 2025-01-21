@@ -32,22 +32,50 @@ function collectData() {
     return data;
 }
 
+function loadFromFirebase(state) {
+    const db = getDatabase();
+    const stateRef = ref(db, `properties/${state}`);
+    onValue(stateRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            populateForm(data);
+        }
+    });
+}
+
+function populateForm(data) {
+    for (const [propertyName, propertyDetails] of Object.entries(data)) {
+        for (const [fieldKey, fieldDetails] of Object.entries(propertyDetails)) {
+            const nameId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-name`;
+            const emailId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-email`;
+            const unitId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-unit`;
+
+            if (fieldDetails.name) {
+                document.getElementById(nameId)?.setAttribute("value", fieldDetails.name);
+            }
+            if (fieldDetails.email) {
+                document.getElementById(emailId)?.setAttribute("value", fieldDetails.email);
+            }
+            if (fieldKey === "unitCount") {
+                document.getElementById(unitId)?.setAttribute("value", propertyDetails.unitCount);
+            }
+        }
+    }
+}
+
+
 // Add event listener to the Submit button
 document.getElementById("submit-button").addEventListener("click", () => {
-    const state = document.title.split(": ")[1]; // Get the state from the page title
+    const state = document.title.split(": ")[1];
     const data = collectData();
-
-    // Save data using firebaseService.js
-    for (const [propertyName, propertyData] of Object.entries(data)) {
-        writePropertyData(state, propertyName, propertyData)
-            .then(() => {
-                console.log(`Data for ${propertyName} in ${state} saved successfully.`);
-            })
-            .catch((error) => {
-                console.error(`Error saving data for ${propertyName}:`, error);
-            });
-    }
+    saveDataToFirebase(state, data);
 });
+
+window.addEventListener("load", () => {
+    const state = document.title.split(": ")[1];
+    loadFromFirebase(state);
+});
+
 
 window.addEventListener("load", () => {
     const state = document.title.split(": ")[1]; // Get the state from the page title
