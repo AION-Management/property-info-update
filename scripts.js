@@ -1,20 +1,4 @@
-import { writePropertyData, getPropertyDataByState } from "./firebaseService.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js";
-
-/**
- * Retrieve all property data for a specific state
- * @param {string} state - The state name (e.g., "Delaware").
- * @param {function} callback - A function to handle the retrieved data.
- */
-function getPropertyDataByState(state, callback) {
-    const db = getDatabase();
-    const stateRef = ref(db, `properties/${state}`);
-    onValue(stateRef, (snapshot) => {
-        const data = snapshot.val();
-        callback(data);
-    });
-}
-
+import { writePropertyData } from "./firebaseService.js";
 
 // Function to collect all text areas and organize data
 function collectData() {
@@ -48,71 +32,21 @@ function collectData() {
     return data;
 }
 
-function populateForm(data) {
-    for (const [propertyName, propertyDetails] of Object.entries(data)) {
-        for (const [fieldKey, fieldDetails] of Object.entries(propertyDetails)) {
-            const nameId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-name`;
-            const emailId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-email`;
-            const unitId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-unit`;
-
-            if (fieldDetails.name) {
-                document.getElementById(nameId)?.setAttribute("value", fieldDetails.name);
-            }
-            if (fieldDetails.email) {
-                document.getElementById(emailId)?.setAttribute("value", fieldDetails.email);
-            }
-            if (fieldKey === "unitCount") {
-                document.getElementById(unitId)?.setAttribute("value", propertyDetails.unitCount);
-            }
-        }
-    }
-}
-
-function loadFromFirebase(state) {
-    const db = getDatabase();
-    const stateRef = ref(db, `properties/${state}`);
-    onValue(stateRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            populateForm(data);
-        }
-    });
-}
-
 // Add event listener to the Submit button
 document.getElementById("submit-button").addEventListener("click", () => {
-    const state = document.title.split(": ")[1];
-    const data = collectData();
-    saveDataToFirebase(state, data);
-});
-
-window.addEventListener("load", () => {
-    const state = document.title.split(": ")[1];
-    loadFromFirebase(state);
-});
-
-
-window.addEventListener("load", () => {
     const state = document.title.split(": ")[1]; // Get the state from the page title
-    getPropertyDataByState(state, (data) => {
-        if (data) {
-            for (const [propertyName, propertyDetails] of Object.entries(data)) {
-                for (const [fieldKey, fieldDetails] of Object.entries(propertyDetails)) {
-                    const nameId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-name`;
-                    const emailId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-${fieldKey}-email`;
-                    const unitId = `${propertyName.toLowerCase().replace(/\s+/g, "-")}-unit`;
+    const data = collectData();
 
-                    if (fieldDetails.name) {
-                        document.getElementById(nameId).value = fieldDetails.name || "";
-                    }
-                    if (fieldDetails.email) {
-                        document.getElementById(emailId).value = fieldDetails.email || "";
-                    }
-                    if (fieldKey === "unitCount") {
-                        document.getElementById(unitId).value = propertyDetails.unitCount || "";
-                    }
-                }
-            }
-        }
-    });
+    // Save data using firebaseService.js
+    for (const [propertyName, propertyData] of Object.entries(data)) {
+        writePropertyData(state, propertyName, propertyData)
+            .then(() => {
+                console.log(`Data for ${propertyName} in ${state} saved successfully.`);
+            })
+            .catch((error) => {
+                console.error(`Error saving data for ${propertyName}:`, error);
+            });
+    }
 });
+
+
