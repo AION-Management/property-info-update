@@ -15,16 +15,18 @@ function collectData() {
             const id = field.id;
             const value = field.value.trim();
 
-            if (id.includes("name")) {
-                const key = id.split("-name")[0];
-                data[propertyName][key] = data[propertyName][key] || {};
-                data[propertyName][key].name = value;
-            } else if (id.includes("email")) {
-                const key = id.split("-email")[0];
-                data[propertyName][key] = data[propertyName][key] || {};
-                data[propertyName][key].email = value;
-            } else if (id.includes("unit")) {
-                data[propertyName]["unitCount"] = value;
+            if (value) { // Only collect non-empty fields
+                if (id.includes("name")) {
+                    const key = id.split("-name")[0];
+                    data[propertyName][key] = data[propertyName][key] || {};
+                    data[propertyName][key].name = value;
+                } else if (id.includes("email")) {
+                    const key = id.split("-email")[0];
+                    data[propertyName][key] = data[propertyName][key] || {};
+                    data[propertyName][key].email = value;
+                } else if (id.includes("unit")) {
+                    data[propertyName]["unitCount"] = value;
+                }
             }
         });
     });
@@ -32,21 +34,24 @@ function collectData() {
     return data;
 }
 
+
 // Add event listener to the Submit button
 document.getElementById("submit-button").addEventListener("click", () => {
     const state = document.title.split(": ")[1]; // Get the state from the page title
     const data = collectData();
 
-    // Save data using firebaseService.js
     for (const [propertyName, propertyData] of Object.entries(data)) {
-        writePropertyData(state, propertyName, propertyData)
+        // Use update to merge data into the database
+        const propertyRef = firebase.database().ref(`${state}/${propertyName}`);
+        propertyRef.update(propertyData)
             .then(() => {
-                console.log(`Data for ${propertyName} in ${state} saved successfully.`);
+                console.log(`Data for ${propertyName} in ${state} updated successfully.`);
             })
             .catch((error) => {
-                console.error(`Error saving data for ${propertyName}:`, error);
+                console.error(`Error updating data for ${propertyName}:`, error);
             });
     }
 });
+
 
 
