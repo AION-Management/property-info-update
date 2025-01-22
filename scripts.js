@@ -1,4 +1,5 @@
 import { writePropertyData } from "./firebaseService.js";
+import { update } from "https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js";
 
 // Function to collect all text areas and organize data
 function collectData() {
