@@ -41,17 +41,43 @@ document.getElementById("submit-button").addEventListener("click", () => {
     const data = collectData();
 
     for (const [propertyName, propertyData] of Object.entries(data)) {
-        // Use update to merge data into the database
         const propertyRef = firebase.database().ref(`${state}/${propertyName}`);
-        propertyRef.update(propertyData)
-            .then(() => {
-                console.log(`Data for ${propertyName} in ${state} updated successfully.`);
-            })
-            .catch((error) => {
-                console.error(`Error updating data for ${propertyName}:`, error);
-            });
+        
+        // Get the current data from the database to merge with the new data
+        propertyRef.once("value").then((snapshot) => {
+            const existingData = snapshot.val() || {}; // Fallback to an empty object if no data exists
+
+            // Merge only non-empty fields into existing data
+            const updatedData = { ...existingData };
+            for (const [key, value] of Object.entries(propertyData)) {
+                if (value && typeof value === "object") {
+                    // For nested objects, check if they have non-empty values
+                    updatedData[key] = {
+                        ...existingData[key], // Retain existing nested data
+                        ...Object.fromEntries(
+                            Object.entries(value).filter(([_, v]) => v?.trim())
+                        ),
+                    };
+                } else if (value.trim()) {
+                    // For scalar fields, only update if the value is non-empty
+                    updatedData[key] = value;
+                }
+            }
+
+            // Update the database with the merged data
+            propertyRef.update(updatedData)
+                .then(() => {
+                    console.log(`Data for ${propertyName} in ${state} updated successfully.`);
+                })
+                .catch((error) => {
+                    console.error(`Error updating data for ${propertyName}:`, error);
+                });
+        }).catch((error) => {
+            console.error("Error retrieving existing data:", error);
+        });
     }
 });
+
 
 
 
