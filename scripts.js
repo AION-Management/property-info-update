@@ -14,26 +14,22 @@ function populateExistingData() {
                 if (propertyElement) {
                     // Populate each field
                     Object.entries(propertyData).forEach(([role, info]) => {
-                        // Convert the ID to match the format in your HTML
-                        const formattedPropertyName = propertyName.toLowerCase().replace(/\s+/g, '-');
-                        
-                        if (role !== 'unit') {
+                        if (role.includes('-unit')) {
+                            const unitField = propertyElement.querySelector(`#${role}`);
+                            if (unitField) {
+                                unitField.value = info;
+                            }
+                        } else {
                             // Handle name field
-                            const nameField = propertyElement.querySelector(`#${formattedPropertyName}-${role}-name`);
+                            const nameField = propertyElement.querySelector(`#${role}-name`);
                             if (nameField && info.name) {
                                 nameField.value = info.name;
                             }
                             
                             // Handle email field
-                            const emailField = propertyElement.querySelector(`#${formattedPropertyName}-${role}-email`);
+                            const emailField = propertyElement.querySelector(`#${role}-email`);
                             if (emailField && info.email) {
                                 emailField.value = info.email;
-                            }
-                        } else {
-                            // Handle unit count field
-                            const unitField = propertyElement.querySelector(`#${formattedPropertyName}-unit`);
-                            if (unitField) {
-                                unitField.value = info;
                             }
                         }
                     });
@@ -57,16 +53,17 @@ function collectData() {
             const id = field.id;
             const value = field.value.trim();
 
-            if (id.includes("name")) {
-                const key = id.split("-name")[0].split('-').slice(-1)[0];  // Get the role part (vp, rem, etc.)
-                data[propertyName][key] = data[propertyName][key] || {};
-                data[propertyName][key].name = value;
-            } else if (id.includes("email")) {
-                const key = id.split("-email")[0].split('-').slice(-1)[0];  // Get the role part (vp, rem, etc.)
-                data[propertyName][key] = data[propertyName][key] || {};
-                data[propertyName][key].email = value;
-            } else if (id.includes("unit")) {
-                data[propertyName].unit = value;
+            // Get the base ID without -name or -email
+            const baseId = id.replace(/-name$/, '').replace(/-email$/, '');
+
+            if (id.includes('unit')) {
+                data[propertyName][baseId] = value;
+            } else if (id.includes('name')) {
+                data[propertyName][baseId] = data[propertyName][baseId] || {};
+                data[propertyName][baseId].name = value;
+            } else if (id.includes('email')) {
+                data[propertyName][baseId] = data[propertyName][baseId] || {};
+                data[propertyName][baseId].email = value;
             }
         });
     });
