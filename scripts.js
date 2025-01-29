@@ -23,10 +23,7 @@ function collectData() {
                 data[propertyName][key] = data[propertyName][key] || {};
                 data[propertyName][key].email = value;
             } else if (id.includes("unit")) {
-                const key = id.split("-unit")[0];
-                data[propertyName][key] = data[propertyName][key] || {};
-                data[propertyName][key].unit = value;
-                //data[propertyName]["unitCount"] = value;
+                data[propertyName]["-unit"] = value;
             }
         });
     });
