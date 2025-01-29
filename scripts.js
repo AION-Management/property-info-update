@@ -1,6 +1,5 @@
 import { writePropertyData } from "./firebaseService.js";
 
-// Function to collect all text areas and organize data
 function collectData() {
     const data = {};
     const properties = document.querySelectorAll(".grid-item");
@@ -24,7 +23,10 @@ function collectData() {
                 data[propertyName][key] = data[propertyName][key] || {};
                 data[propertyName][key].email = value;
             } else if (id.includes("unit")) {
-                data[propertyName]["unitCount"] = value;
+                const key = id.split("-unit")[0];
+                data[propertyName][key] = data[propertyName][key] || {};
+                data[propertyName][key].unit = value;
+                //data[propertyName]["unitCount"] = value;
             }
         });
     });
@@ -32,12 +34,10 @@ function collectData() {
     return data;
 }
 
-// Add event listener to the Submit button
 document.getElementById("submit-button").addEventListener("click", () => {
-    const state = document.title.split(": ")[1]; // Get the state from the page title
+    const state = document.title.split(": ")[1];
     const data = collectData();
 
-    // Save data using firebaseService.js
     for (const [propertyName, propertyData] of Object.entries(data)) {
         writePropertyData(state, propertyName, propertyData)
             .then(() => {
