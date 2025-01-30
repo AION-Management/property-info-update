@@ -1,5 +1,39 @@
 import { writePropertyData, getPropertyDataByState } from "./firebaseService.js";
 
+// Add this function at the start of your file
+function showAlert(message, isSuccess = true) {
+    // Remove any existing alerts
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert ${isSuccess ? 'success' : 'error'}`;
+    alertDiv.innerHTML = `
+        <div class="alert-content">
+            <p>${message}</p>
+            <button class="close-alert">×</button>
+        </div>
+    `;
+
+    // Add to document
+    document.body.appendChild(alertDiv);
+
+    // Add click handler to close button
+    alertDiv.querySelector('.close-alert').addEventListener('click', () => {
+        alertDiv.remove();
+    });
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(alertDiv)) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
 function escapeCSSSelector(str) {
     // If the string starts with a digit, escape it
     if (/^\d/.test(str)) {
@@ -84,17 +118,32 @@ document.addEventListener('DOMContentLoaded', () => {
     populateExistingData();
 });
 
-document.getElementById("submit-button").addEventListener("click", () => {
+document.getElementById("submit-button").addEventListener("click", async () => {
     const state = document.title.split(": ")[1];
     const data = collectData();
+    let allSaved = true;
+    let errorMessages = [];
 
-    for (const [propertyName, propertyData] of Object.entries(data)) {
-        writePropertyData(state, propertyName, propertyData)
+    // Create a promise for each property save
+    const savePromises = Object.entries(data).map(([propertyName, propertyData]) => {
+        return writePropertyData(state, propertyName, propertyData)
             .then(() => {
                 console.log(`Data for ${propertyName} in ${state} saved successfully.`);
             })
             .catch((error) => {
+                allSaved = false;
+                errorMessages.push(`Error saving ${propertyName}: ${error.message}`);
                 console.error(`Error saving data for ${propertyName}:`, error);
             });
+    });
+
+    // Wait for all saves to complete
+    await Promise.all(savePromises);
+
+    // Show appropriate styled alert based on results
+    if (allSaved) {
+        showAlert(`All property data for ${state} has been successfully saved!`, true);
+    } else {
+        showAlert(`Some errors occurred while saving:\n${errorMessages.join('\n')}`, false);
     }
 });
