@@ -1,5 +1,13 @@
 import { writePropertyData, getPropertyDataByState } from "./firebaseService.js";
 
+function escapeCSSSelector(str) {
+    // If the string starts with a digit, escape it
+    if (/^\d/.test(str)) {
+        return '\\3' + str[0] + ' ' + str.slice(1);
+    }
+    return str;
+}
+
 function populateExistingData() {
     const state = document.title.split(": ")[1];
     
@@ -15,19 +23,19 @@ function populateExistingData() {
                     // Populate each field
                     Object.entries(propertyData).forEach(([role, info]) => {
                         if (role.includes('-unit')) {
-                            const unitField = propertyElement.querySelector(`#${role}`);
+                            const unitField = propertyElement.querySelector(`#${escapeCSSSelector(role)}`);
                             if (unitField) {
                                 unitField.value = info;
                             }
                         } else {
                             // Handle name field
-                            const nameField = propertyElement.querySelector(`#${role}-name`);
+                            const nameField = propertyElement.querySelector(`#${escapeCSSSelector(role)}-name`);
                             if (nameField && info.name) {
                                 nameField.value = info.name;
                             }
                             
                             // Handle email field
-                            const emailField = propertyElement.querySelector(`#${role}-email`);
+                            const emailField = propertyElement.querySelector(`#${escapeCSSSelector(role)}-email`);
                             if (emailField && info.email) {
                                 emailField.value = info.email;
                             }
