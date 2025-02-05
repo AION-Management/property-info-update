@@ -8,8 +8,19 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav>
+    <div class="hamburger-menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <header class="page-header">
+        <h1>Maryland Properties</h1>
+        <button id="submit-button" class="update-btn">Submit</button>
+    </header>
+
+    <aside class="sidebar">
+        <nav class="nav-buttons">
             <ul>
                 <li><a href="index.html">All Properties</a></li>
                 <li><a href="delaware.html">Delaware</a></li>
@@ -20,9 +31,8 @@
                 <li><a href="pennsylvania.html">Pennsylvania</a></li>
                 <li><a href="virginia.html">Virginia</a></li>
             </ul>
-            <button id="submit-button" class="update-btn">Submit</button>
         </nav>
-    </header>
+    </aside>
     <main>
         <div class="grid-container">
             <div class="grid-item">
@@ -368,7 +378,28 @@
             </div>
         </div>
     </main>
-
+    <script>
+        const hamburger = document.querySelector('.hamburger-menu');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+ 
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+         // Add column classes to divs based on number of properties
+        document.addEventListener('DOMContentLoaded', function() {
+            const propertyDivs = document.querySelectorAll('#container > div');
+            propertyDivs.forEach(div => {
+                const propertyCount = div.querySelectorAll('p').length;
+                if (propertyCount > 8) {
+                    div.classList.add('three-columns');
+                } else if (propertyCount > 5) {
+                    div.classList.add('two-columns');
+                }
+            });
+        });
+    </script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script type="module" src="firebaseConfig.js"></script>
